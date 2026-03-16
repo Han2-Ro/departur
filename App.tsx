@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { useMemo, useState } from "react";
+import { DepartureAnnouncerScreen } from "./src/DepartureAnnouncerScreen";
+import {
+  AnnouncerStatus,
+  createDepartureAnnouncer,
+} from "./src/createDepartureAnnouncer";
 
 export default function App() {
+  const [status, setStatus] = useState<AnnouncerStatus>("idle");
+  const [error, setError] = useState<string | undefined>(undefined);
+  const announcer = useMemo(
+    () =>
+      createDepartureAnnouncer({
+        onStatusChange: setStatus,
+        onError: (nextError) => setError(nextError.message),
+      }),
+    [],
+  );
+
+  const handleStart = () => {
+    setError(undefined);
+    announcer.start();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <>
+      <DepartureAnnouncerScreen
+        error={error}
+        onStart={handleStart}
+        status={status}
+      />
       <StatusBar style="auto" />
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
