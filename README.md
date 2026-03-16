@@ -26,20 +26,3 @@ pnpm android
 pnpm test
 pnpm lint
 ```
-
-### jj workflow (quick reference)
-
-```bash
-jj st
-jj new
-jj describe -m "your change description"
-jj squash
-jj log
-```
-
-## TDD workflow
-
-1. Add/adjust a test first.
-2. Run `pnpm test` and confirm it fails (red).
-3. Implement minimal code to pass (green).
-4. Refactor while keeping tests green.
