@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo run:android",
+    "android": "bash -lc 'SDK_PATH=\"${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}\"; [ -d \"$SDK_PATH\" ] || SDK_PATH=\"$HOME/.android/sdk\"; export ANDROID_HOME=\"$SDK_PATH\" ANDROID_SDK_ROOT=\"$SDK_PATH\"; expo run:android'",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build": "export ANDROID_HOME=\"${ANDROID_HOME:-$HOME/Android/Sdk}\" ANDROID_SDK_ROOT=\"${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}\" && cd android && ./gradlew assembleRelease",
