@@ -4,8 +4,11 @@ This project ports the original `ticker.py` departure announcer into a React Nat
 
 ## Behavior
 
-- One screen, one button: `Announcer starten`
-- Hard-coded station (`diva=60200439`)
+- Single-screen app with start control and station search/selection controls
+- Default station remains `diva=60200439`
+- You can search stations by name and select a station
+- The selected station is used for announcer departures
+- Station search/selection and start controls are locked while the announcer is running
 - Fetches Wiener Linien realtime departures
 - Speaks announcements in German
 - Repeats every 60 seconds after start
