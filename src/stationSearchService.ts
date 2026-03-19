@@ -1,7 +1,7 @@
 import type { Station } from "./types/station";
 
 const OGD_STATIONS_CSV_URL =
-  "https://www.wienerlinien.at/ogd_realtime/doku/ogd/haltestellen.csv";
+  "https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltestellen.csv"
 
 type FetchLike = typeof fetch;
 
