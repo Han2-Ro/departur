@@ -4,10 +4,18 @@ const OGD_STATIONS_CSV_URL =
   "https://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-ogd-haltestellen.csv"
 
 type FetchLike = typeof fetch;
+type CsvDelimiter = "," | ";";
 
 let stationCache: Promise<Station[]> | null = null;
 
-const parseCsvLine = (line: string): string[] => {
+const detectDelimiter = (headerLine: string): CsvDelimiter => {
+  const semicolonCount = (headerLine.match(/;/g) ?? []).length;
+  const commaCount = (headerLine.match(/,/g) ?? []).length;
+
+  return semicolonCount >= commaCount ? ";" : ",";
+};
+
+const parseCsvLine = (line: string, delimiter: CsvDelimiter): string[] => {
   const cells: string[] = [];
   let current = "";
   let inQuotes = false;
@@ -26,7 +34,7 @@ const parseCsvLine = (line: string): string[] => {
       continue;
     }
 
-    if (char === "," && !inQuotes) {
+    if (char === delimiter && !inQuotes) {
       cells.push(current);
       current = "";
       continue;
@@ -49,18 +57,23 @@ const parseStationsCsv = (csvText: string): Station[] => {
     return [];
   }
 
-  const header = parseCsvLine(lines[0]).map((cell) => cell.toLowerCase());
+  const delimiter = detectDelimiter(lines[0]);
+  const header = parseCsvLine(lines[0], delimiter).map((cell) =>
+    cell.toLowerCase().replace(/^\uFEFF/, ""),
+  );
   const divaIndex = header.indexOf("diva");
-  const nameIndex = header.indexOf("name");
+  const nameIndex = ["name", "platformtext", "haltestellenname", "stopname"]
+    .map((key) => header.indexOf(key))
+    .find((index) => index !== -1);
 
-  if (divaIndex === -1 || nameIndex === -1) {
+  if (divaIndex === -1 || nameIndex === undefined) {
     return [];
   }
 
   const stations: Station[] = [];
 
   for (const line of lines.slice(1)) {
-    const cells = parseCsvLine(line);
+    const cells = parseCsvLine(line, delimiter);
     const diva = cells[divaIndex]?.trim();
     const name = cells[nameIndex]?.trim();
 

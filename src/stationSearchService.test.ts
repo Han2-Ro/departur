@@ -83,4 +83,22 @@ describe("stationSearchService", () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
+
+  it(
+    "loads stations from the live OGD URL without a mocked fetch",
+    async () => {
+      const { searchStationsByName } = loadService();
+
+      const results = await searchStationsByName("schra");
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0]).toEqual(
+        expect.objectContaining({
+          diva: expect.any(String),
+          name: expect.any(String),
+        }),
+      );
+    },
+    30000,
+  );
 });

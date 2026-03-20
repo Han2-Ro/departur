@@ -105,4 +105,25 @@ describe("App", () => {
 
     expect(await findByText("Fehler: Suche kaputt")).toBeTruthy();
   });
+
+  it("shows search results from service and selects one end-to-end in app", async () => {
+    mockSearchStationsByName.mockResolvedValue([
+      { diva: "60200001", name: "Schrankenberggasse" },
+      { diva: "60200002", name: "Achengasse" },
+    ]);
+
+    const { getByPlaceholderText, getByRole, getByText } = render(<App />);
+
+    fireEvent.changeText(getByPlaceholderText("Station suchen"), "schrank");
+
+    const firstResult = await waitFor(() =>
+      getByRole("button", { name: "Station wählen: Schrankenberggasse" }),
+    );
+
+    fireEvent.press(firstResult);
+
+    expect(
+      getByText("Ausgewählte Station: Schrankenberggasse (60200001)"),
+    ).toBeTruthy();
+  });
 });
